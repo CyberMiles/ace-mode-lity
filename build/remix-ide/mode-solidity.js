@@ -16,18 +16,22 @@ var SolidityHighlightRules = function(options) {
         "keyword":
             "as|emit|from|import|returns",
         "keyword.control":
+            "rule|when|then|" +
             "break|continue|do|else|for|if|return|while",
         "keyword.control.deprecated":
             "throw",
         "keyword.operator":
+            "eni|factDelete|factInsert|fireAllRules|update|" +
             "delete|new",
         "keyword.other.reserved": // see https://solidity.readthedocs.io/en/develop/miscellaneous.html#reserved-keywords
+            "schedule|" +
             "abstract|after|alias|apply|auto|case|catch|copyof|default|" +
             "define|final|immutable|implements|in|inline|let|macro|match|" +
             "mutable|null|of|override|partial|promise|reference|relocatable|" +
             "sealed|sizeof|static|supports|switch|try|type|typedef|typeof|" +
             "unchecked",
         "storage.type":
+            "safeuint|" +
             "contract|library|interface|function|constructor|event|modifier|" +
             "struct|mapping|enum|" +
             "var|bool|address|" + intTypes,
@@ -44,6 +48,7 @@ var SolidityHighlightRules = function(options) {
         "storage.modifier.event":
             "anonymous|indexed",
         "support.function":
+            "isValidator|" +
             "addmod|assert|blockhash|ecrecover|gasleft|keccak256|mulmod|" +
             "require|revert|ripemd160|selfdestruct|sha256",
         "support.function.deprecated":
