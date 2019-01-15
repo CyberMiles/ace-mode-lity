@@ -10,6 +10,7 @@ var SolidityHighlightRules = function(options) {
     for (var width = 8; width <= 256; width += 8) {
         intTypes += '|bytes' + (width / 8) + '|uint' + width + '|int' + width;
     }
+    var fixedTypes = 'fixed|ufixed|fixed128x18|ufixed128x18';
     var mainKeywordsByType = {
         "variable.language":
             "this|super",
@@ -34,7 +35,7 @@ var SolidityHighlightRules = function(options) {
             "safeuint|" +
             "contract|library|interface|function|constructor|event|modifier|" +
             "struct|mapping|enum|" +
-            "var|bool|address|" + intTypes,
+            "var|bool|address|" + intTypes + "|" + fixedTypes,
         "storage.type.array.dynamic":
             "bytes|string",
         "storage.modifier.inheritance":
@@ -136,20 +137,12 @@ var SolidityHighlightRules = function(options) {
                 regex : '"(?=.)',
                 push  : "qqstring"
             }, {
-                token : "storage.type.reserved", // TODO really "reserved"? Compiler 0.4.24 says "UnimplementedFeatureError: Not yet implemented - FixedPointType."
-                regex : "u?fixed(?:" +
-                        "8x[0-8]|" + // Docs say 0-80 for the fractional part. It's unclear whether 0-80 bits or 0-80 decimal places.
-                        "16x(?:1[0-6]|[0-9])|" + // Longest match has to be first alternative.
-                        "24x(?:2[0-4]|1[0-9]|[0-9])|" +
-                        "32x(?:3[0-2]|[1-2][0-9]|[0-9])|" +
-                        "40x(?:40|[1-3][0-9]|[0-9])|" +
-                        "48x(?:4[0-8]|[1-3][0-9]|[0-9])|" +
-                        "56x(?:5[0-6]|[1-4][0-9]|[0-9])|" +
-                        "64x(?:6[0-4]|[1-5][0-9]|[0-9])|" +
-                        "72x(?:7[0-2]|[1-6][0-9]|[0-9])|" +
-                        "(?:80|88|96|104|112|120|128|136|144|152|160|168|176|184|192|200|208|216|224|232|240|248|256)x(?:80|[1-7][0-9]|[0-9])" +
-                        ")?",
-                inheritingStateRuleId : "fixedNumberType"
+                token : "storage.type",
+                regex : "u?fixed" +
+                    "(8|16|24|32|40|48|56|64|72|80|88|96|" + // M (1st): multiplies of 8
+                    "104|112|120|128|136|144|152|160|168|" +
+                    "176|184|192|200|208|216|224|232|240|" +
+                    "248|256)x([1-9]\\d*)" // N (2nd): integer starts with non-zero
             }, {
                 token : "keyword.control", // PlaceholderStatement in ModifierDefinition
                 regex : /\b_\b/
@@ -324,12 +317,6 @@ var SolidityHighlightRules = function(options) {
                     break;
                 case "rparen":
                     rule.next = "pop";
-                    break;
-                case "fixedNumberType":
-                    rule.onMatch = function onFunctionArgumentsFixedNumberTypeMatch(value, currentState, stack) {
-                        hasSeenFirstFunctionArgumentKeyword = true;
-                        return rule.token;
-                    };
                     break;
             }
             delete rule.inheritingStateRuleId;
