@@ -1,3 +1,8 @@
+# v0.0.3-0.1.1 / 2019-02-28
+* Add 2 keywords.
+  - freegas
+  - rand
+
 # v0.0.2-0.1.1 / 2019-01-15
 
 * Autocomplete 4 keywords for fixed point types.

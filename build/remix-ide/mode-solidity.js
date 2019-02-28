@@ -46,10 +46,12 @@ var SolidityHighlightRules = function(options) {
             "constant|payable|pure|view",
         "storage.modifier.visibility":
             "private|public|external|internal",
+        "storage.modifier.specialmodifier":
+            "freegas",
         "storage.modifier.event":
             "anonymous|indexed",
         "support.function":
-            "isValidator|" +
+            "isValidator|rand|" +
             "addmod|assert|blockhash|ecrecover|gasleft|keccak256|mulmod|" +
             "require|revert|ripemd160|selfdestruct|sha256",
         "support.function.deprecated":
@@ -660,7 +662,7 @@ var CstyleBehaviour = function() {
 
 };
 
-    
+
 CstyleBehaviour.isSaneInsertion = function(editor, session) {
     var cursor = editor.getCursorPosition();
     var iterator = new TokenIterator(session, cursor.row, cursor.column);
@@ -764,16 +766,16 @@ oop.inherits(FoldMode, BaseFoldMode);
 
             if (match[1])
                 return this.openingBracketBlock(session, match[1], row, i);
-                
+
             var range = session.getCommentFoldRange(row, i + match[0].length, 1);
-            
+
             if (range && !range.isMultiLine()) {
                 if (forceMultiline) {
                     range = this.getSectionRange(session, row);
                 } else if (foldStyle != "all")
                     range = null;
             }
-            
+
             return range;
         }
 
@@ -790,7 +792,7 @@ oop.inherits(FoldMode, BaseFoldMode);
             return session.getCommentFoldRange(row, i, -1);
         }
     };
-    
+
     this.getSectionRange = function(session, row) {
         var line = session.getLine(row);
         var startIndent = line.search(/\S/);
@@ -807,7 +809,7 @@ oop.inherits(FoldMode, BaseFoldMode);
             if  (startIndent > indent)
                 break;
             var subRange = this.getFoldWidgetRange(session, "all", row);
-            
+
             if (subRange) {
                 if (subRange.start.row <= startRow) {
                     break;
@@ -819,7 +821,7 @@ oop.inherits(FoldMode, BaseFoldMode);
             }
             endRow = row;
         }
-        
+
         return new Range(startRow, startColumn, endRow, session.getLine(endRow).length);
     };
 
